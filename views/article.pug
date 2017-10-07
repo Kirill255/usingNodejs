@@ -1,0 +1,76 @@
+extends layout
+
+block variables
+	-BLOGPAGE = true;
+
+block content
+	// Navbar
+	include ./includes/navbar
+	// Post Header
+	header.masthead(style="background-image: url('/img/post-bg.jpg')")
+		.container
+			.row
+				.col-lg-8.col-md-10.mx-auto
+					.post-heading
+						h1 #{article.title}
+						h2.subheading #{article.subtitle}
+						span.meta
+							| Posted by #{article.author}
+							| on #{moment(article.created_at).format("MMMM Do YYYY, hh:mm:ss a")}
+	// Post Content
+	article
+		.container
+			.row
+				.col-lg-8.col-md-10.mx-auto
+					p
+						| #{article.body}
+					a(href="#")
+						img.img-fluid(src="/img/post-sample-image.jpg", alt="")
+					span.caption.text-muted
+						| To go places and do things that have never been done before – that’s what living is all about.
+					p
+						| Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds, to seek out new life and new civilizations, to boldly go where no man has gone before.
+					p
+						| As I stand out here in the wonders of the unknown at Hadley, I sort of realize there’s a fundamental truth to our nature, Man must explore, and this is exploration at its greatest.
+					p
+						| Placeholder text by 
+						a(href="http://spaceipsum.com/") Space Ipsum
+						| . Photographs by 
+						a(href="https://www.flickr.com/photos/nasacommons/") NASA on The Commons
+						| .
+					//- блок комментриев
+					hr
+					h3 Comments
+					br
+					each comment in article.comments
+						div.card.comment-block
+							h5.card-header Posted By #{comment.comment_author}
+							p.card-text.comment-text
+								| #{comment.comment_body}
+							div.card-footer.text-right #{moment(comment.comment_date).format("MMMM Do YYYY, hh:mm:ss a")}
+					//- форма комментриев
+					hr
+					if errors
+						ul.errors
+						each error in errors
+							li.alert.alert-danger #{error.msg}
+					h4 Add a Comment
+					p
+						form.comment-form(method="POST", action=`/blog/articles/comments/add/${article._id}`, id="comments")
+							input(name="article_id", type="hidden", value=`${article._id}`)
+							.form-group
+								label Subject
+								input.form-control(type="text", name="comment_subject")
+							.form-group
+								label Name
+								input.form-control(type="text", name="comment_author")
+							.form-group
+								label Email
+								input.form-control(type="email", name="comment_email")
+							.form-group
+								label Body
+								textarea.form-control(rows="10", id="body", name="comment_body")
+							input.btn.btn-secondary(name="submit", type="submit", value="Add Comment")
+	hr
+	// Footer
+	include ./includes/footer

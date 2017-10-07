@@ -1,0 +1,16 @@
+extends layout
+
+block variables
+	-BLOGPAGE = true;
+	-ARTICLES = true;
+
+block content
+	// Navbar
+	include ./includes/navbar
+	// Просто пустой блок(костыль) чтобы отодвинуть контент  
+	.spacer
+	// Main Content
+	include ./includes/main
+	hr
+	// Footer
+	include ./includes/footer

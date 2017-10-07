@@ -1,0 +1,21 @@
+.container
+	.row
+		.col-lg-8.col-md-10.mx-auto
+			if title
+				h1.text-center #{title}
+			each article in articles
+				.post-preview
+					a(href=`/blog/articles/article/${article._id}`)
+						h2.post-title
+							| #{article.title}
+						h3.post-subtitle
+							| #{article.subtitle}
+					p.post-meta
+						| Posted by #{article.author}
+						| on #{moment(article.created_at).format("MMMM Do YYYY, hh:mm:ss a")}
+				hr
+			if	ARTICLES	
+				hr
+				// Pager
+				.clearfix
+					a.btn.btn-secondary.float-right(href="#") Older Posts →

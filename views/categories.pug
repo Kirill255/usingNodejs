@@ -1,0 +1,29 @@
+extends layout
+
+block variables
+	-BLOGPAGE = true;
+	//- -ARTICLES = true;
+
+block content
+	// Navbar
+	include ./includes/navbar
+	// Просто пустой блок(костыль) чтобы отодвинуть контент  
+	.spacer
+	// Main Content
+	.container
+		.row
+			.col-lg-8.col-md-10.mx-auto
+				//- h1= title
+				h1.text-center #{title}
+				br
+				ul.list-group
+					if categories.length
+						each category in categories
+							li.list-group-item
+								a(href=`/blog/articles/category/${category._id}`) #{category.title}
+					else
+						li.list-group-item
+							| Categories doesn't yet exist
+	hr
+	// Footer
+	include ./includes/footer

@@ -1,0 +1,33 @@
+extends layout
+
+block variables
+	-BLOGPAGE = true;
+	//- -ARTICLES = true;
+
+block content
+	// Navbar
+	include ./includes/navbar
+	.spacer
+	.container
+		.row
+			.col-lg-8.col-md-10.mx-auto
+				a.btn.btn-tiny.btn-primary(href="/blog/manage/categories/add") Create Categogy
+				h1= title
+					small
+						a(href="/blog/manage/articles") Manage Articles
+				!= messages()
+				table.table.table-striped
+					tr
+						th Category Title
+						th
+					if categories
+						each category in categories
+							tr
+								td #{category.title} 
+								td
+									a.btn.btn-tiny.btn-outline-secondary(href=`/blog/manage/categories/edit/${category._id}`) Edit
+					
+
+	hr
+	// Footer
+	include ./includes/footer

@@ -5,8 +5,10 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('HelloExpress.db');
+const session = require('express-session');
+
+const expressValidator = require('express-validator');
+
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -14,11 +16,20 @@ var quotes = require('./routes/quotes');
 var about = require('./routes/about');
 var mail = require('./routes/mail');
 
+var blog = require('./routes/blog');
+// так как у меня сдесь не отдельное приложение, а несколько разных примеров на разных url
+// то я решил не делать отдельные роуты для articles, categories, manage, а засунуть всё что косается блога в роут blog
+// var articles = require('./routes/articles');
+// var categories = require('./routes/categories');
+// var manage = require('./routes/manage');
+
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+app.locals.moment = require('moment'); // делаем глобальную переменную moment, которая будет доступна по view, гуглить app.locals
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -28,11 +39,50 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// use express-session
+app.use(session({
+	secret: 'verysecretstring',
+	resave: false,
+	saveUninitialized: true
+	// cookie: { secure: true } // хер знает почему, но если ставить опцию cookie, то флеш сообщения не выводятся!!! что за херня? кароче убрал эту опцию временно, что бы всё работало, в будущем естественно, когда мне нужны будут куки, нахер удалить есь функционал с флеш сообщениями(они всё ровно не очень =))
+}));
+
+// use connect-flash && express-messages
+// смотреть доку, вроде как express-messages и connect-flash вместе как-то связаны, а также чтобы всё это работало нужно подключить express-session
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+	res.locals.messages = require('express-messages')(req, res);
+	next();
+});
+
+// use express-validator, кароче в новой доке всё по другому, вот старая дока https://devhub.io/repos/theorm-express-validator
+app.use(expressValidator({
+	errorFormatter: function(param, msg, value) {
+		var namespace = param.split('.');
+		var root = namespace.shift();
+		var formParam = root;
+
+		while(namespace.length) {
+			formParam += '[' + namespace.shift() + ']';
+		}
+		return {
+			param : formParam,
+			msg   : msg,
+			value : value
+		};
+	}
+}));
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/quotes', quotes);
 app.use('/about', about);
 app.use('/mail', mail);
+app.use('/blog', blog);
+// я убрал эти use, коммент смотри выше в require
+// app.use('/articles', articles); 
+// app.use('/categories', categories);
+// app.use('/manage', manage);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -58,7 +108,7 @@ module.exports = app;
 
 
 /*
-
+// сначало хотел это тоже прикрутить как-нибудь используя sqlite3
 // /
 app.get("/", (req, res) => {
 	console.log(req.method, req.url);

@@ -1,0 +1,59 @@
+extends layout
+
+block variables
+	-BLOGPAGE = true;
+	//- -ARTICLES = true;
+
+block content
+	// Navbar
+	include ./includes/navbar
+	.spacer
+	.container
+		.row
+			.col-lg-8.col-md-10.mx-auto
+				h1= title
+				if errors
+					ul.errors
+					each error in errors
+						li.alert.alert-danger #{error.msg}
+						
+				form(method="POST", action=`/blog/manage/article/edit/${article._id}`)
+					.form-group
+						label Title
+						input.form-control(name="title", type="text", value=`${article.title}`)
+					.form-group
+						label Subtitle
+						input.form-control(name="subtitle", type="text", value=`${article.subtitle}`)
+					.form-group
+						label Category
+						select.form-control(name="category")
+							each category in categories	
+								//- тут нам нужно сообщить какая категория у редактируемой статьи и подставить нужное значение
+								- var SELECT = null; 
+								- if (category._id.toString() === article.category.toString()) SELECT = "selected";
+								option(value=category._id, selected=SELECT) #{category.title}
+
+								//- ещё более простой вариант, хотя кому как, мы используем условия самого шаблонизатора, а не javascript, всё просто, если id равен, то юзаем option с атрибутом selected иначе без него
+								//- if (category._id.toString() === article.category.toString())
+								//- 	option(value=category._id, selected) #{category.title}
+								//- else
+								//- 	option(value=category._id) #{category.title}
+
+					.form-group
+						label Author
+						input.form-control(name="author", type="text", value=`${article.author}`)
+					.form-group
+						label Body
+						textarea.form-control(rows="10", name="body", id="article_body") #{article.body}
+							if body
+								=body
+					input.btn.btn-primary(name="submit", type="submit", value="Save")
+					a.btn.btn-outline-secondary(href="/blog/manage/articles") Back
+					a.btn.btn-danger.article-delete.pull-right(data-article-id=article._id.toString(), data-csrf=locals._csrf) Delete
+
+
+
+
+	hr
+	// Footer
+	include ./includes/footer

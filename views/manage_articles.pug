@@ -1,0 +1,38 @@
+extends layout
+
+block variables
+	-BLOGPAGE = true;
+	//- -ARTICLES = true;
+
+block content
+	// Navbar
+	include ./includes/navbar
+	.spacer
+	.container
+		.row
+			.col-lg-8.col-md-10.mx-auto
+				a.btn.btn-tiny.btn-primary(href="/blog/manage/articles/add") Create Article
+				h1= title
+					small
+						a(href="/blog/manage/categories") Manage Categories
+				!= messages()
+				table.table.table-striped
+					tr
+						th Article Title
+						th Subtitle
+						th Data Published
+						th Author
+						th
+					if articles
+						each article in articles
+							tr
+								td #{article.title} 
+								td #{article.subtitle} 
+								td #{moment(article.created_at).format("MMMM Do YYYY, hh:mm:ss a")} 
+								td #{article.author}
+								td
+									a.btn.btn-tiny.btn-outline-secondary(href=`/blog/manage/articles/edit/${article._id}`) Edit
+
+	hr
+	// Footer
+	include ./includes/footer
