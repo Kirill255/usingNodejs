@@ -1,3 +1,4 @@
+// для блога
 $(document).ready(function() {
 	$(".category-delete").click(function(e) {
 		var target = e.target;

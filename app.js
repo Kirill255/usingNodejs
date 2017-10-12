@@ -15,6 +15,7 @@ var users = require('./routes/users');
 var quotes = require('./routes/quotes');
 var about = require('./routes/about');
 var mail = require('./routes/mail');
+var todo = require('./routes/todo');
 
 var blog = require('./routes/blog');
 // так как у меня сдесь не отдельное приложение, а несколько разных примеров на разных url
@@ -78,6 +79,7 @@ app.use('/users', users);
 app.use('/quotes', quotes);
 app.use('/about', about);
 app.use('/mail', mail);
+app.use('/todo', todo);
 app.use('/blog', blog);
 // я убрал эти use, коммент смотри выше в require
 // app.use('/articles', articles); 
@@ -108,7 +110,7 @@ module.exports = app;
 
 
 /*
-// сначало хотел это тоже прикрутить как-нибудь используя sqlite3
+// сначало хотел это тоже прикрутить как-нибудь используя sqlite3 (прикрутил примерно похожую логику в /todo)
 // /
 app.get("/", (req, res) => {
 	console.log(req.method, req.url);

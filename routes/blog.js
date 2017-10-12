@@ -389,4 +389,11 @@ router.post("/articles/comments/add/:id", function(req, res, next) {
 	}
 });
 
+// /blog/contact
+router.get("/contact", function(req, res, next) {
+	res.render("contact", {
+		title: "Contact Me"
+	});
+});
+
 module.exports = router;

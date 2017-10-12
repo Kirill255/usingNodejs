@@ -1,0 +1,91 @@
+extends layout
+
+block variables
+
+block content
+	h1#tasksList.text-center #{title} 
+		a.btn.btn-primary.btn-xs(href="#addTask") Add New task
+	.container
+		.row
+			.col-lg-8.col-md-10.col-lg-offset-2.col-md-offset-1
+				div
+					h3 Tasks list
+					table.table.table-hover
+						thead
+							tr
+								th Title
+								th Describe
+								th Done
+								th CreateTIME
+								th CreateDATE
+								th Edit
+								th Delete
+						tbody
+							each task in tasks
+								//- кароче у меня в базе значение поля Done(число или 1 или 0) это true и false соответственно, при выводе на страницу, чтобы выводить вместо 1 и 0, я сделал переменную checked, а так же добавляю к строке bootstrap класс, если задача выполнена 
+								- var val = "";
+								- var checked = null;  
+								- if (task.Done === 1)
+									-val = "success";
+									-checked = "checked"; 
+								tr(class=val)
+									td= task.Title
+									td= task.Describe
+									td 
+										input.checkbox.checkBox(type="checkbox", checked=checked, data-checktask-id=task.id.toString())
+									td= task.CreateTIME
+									td= task.CreateDATE
+									td
+										a.btn.btn-default.edit-task(href="", data-edittask-id=task.id.toString()) Edit
+									td
+										a.btn.btn-danger.delete-task(href="", data-deltask-id=task.id.toString(), data-csrf=locals._csrf) Delete
+	br
+	hr
+	br
+	.container
+		.row
+			.col-lg-8.col-md-10.col-lg-offset-2.col-md-offset-1
+				h3 Add New Task 
+					a.btn.btn-primary.btn-xs(href="#tasksList") Tasks list
+				form#addTask(method="POST", action="/todo")
+					.form-group
+						label(for="name") Title
+						input.form-control(type="text", id="title", name="title", placeholder="Enter todo title")
+					.form-group
+						label(for="message") Describe
+						textarea.form-control(rows="3", id="describe", name="describe", placeholder="Enter todo describe")
+					input.btn.btn-primary(type="submit", value="Add")
+	br
+	
+				
+	//- наше собственно модальное окно(решил не использовать,а взять bootstrap)
+	//- div#popup-edit.hide
+	//- 	form(method="POST", action="/todo/edit/")
+	//- 		.form-group
+	//- 			label(for="name") Title
+	//- 			input.form-control(type="text", id="title", name="title", placeholder="Enter todo title")
+	//- 		.form-group
+	//- 			label(for="message") Describe
+	//- 			textarea.form-control(rows="3", id="describe", name="describe", placeholder="Enter todo describe")
+	//- 		input.btn.btn-primary(type="submit", value="Add")
+
+	//- наше модальное окно взятое из bootstrap
+	.modal.fade
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type="button", data-dismiss="modal", aria-label="Close")
+						span(aria-hidden="true") ×
+					h4.modal-title Edit task
+				.modal-body
+					form(method="POST", action="/todo/edit/")
+						.form-group
+							label(for="name") Title
+							input.form-control(type="text", id="title", name="title", placeholder="Enter todo title")
+						.form-group
+							label(for="message") Describe
+							textarea.form-control(rows="3", id="describe", name="describe", placeholder="Enter todo describe")
+				.modal-footer
+					button.btn.btn-default(type="button", data-dismiss="modal") Close
+					button.btn.btn-primary.save-task(type="button") Save changes
+
